@@ -15,6 +15,7 @@
     <filterButtons 
       @fetch-all="fetch()" @filter-values="(n) => filterValues(n)" 
       :folders=folders
+      id="filterbuttons"
     />
 
     <catPicture 
@@ -23,6 +24,13 @@
       :selectedImages="selectedImages"
       :key="pic.image_id"
       @bookmark="(v) => bookmark(v)"
+    />
+
+    <filterButtons 
+      @fetch-all="fetch()" @filter-values="(n) => filterValues(n)" 
+      :folders=folders
+      :class="{active : !navbarInView}"
+      id="bottomFilterbuttons"
     />
 
   </div>
@@ -50,7 +58,8 @@ export default {
       folderName: "",
       folders: {},
       savedValue: '',
-      validationMessage: ''
+      validationMessage: '',
+      navbarInView: true
     }
   },
   methods: {
@@ -101,6 +110,19 @@ export default {
         newArr.push(allImgs.filter((img) => img.image_id === id)[0])
       })
       this.data = newArr;
+    },
+    isNavbarInViewport() {
+      const navbarElement = document.getElementById('filterbuttons');
+      const rect = navbarElement.getBoundingClientRect();
+      return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    },
+    handleScroll(){
+      this.navbarInView = this.isNavbarInViewport();
     }
   },
   mounted() {
@@ -110,7 +132,13 @@ export default {
       this.selectedImages = storedSelectedImages;
     }
     this.folders = JSON.parse(localStorage.getItem("storedFolders"));
-  }
+  },
+  created() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
 }
 </script>
 
@@ -208,5 +236,15 @@ export default {
 .validation-message {
   color: red;
   display: block;
+}
+#bottomFilterbuttons {
+  position: fixed;
+  background: white;
+  width: 100%;
+  padding: 10px;
+  bottom: -100px;
+}
+#bottomFilterbuttons.active {
+  bottom: 0;
 }
 </style>

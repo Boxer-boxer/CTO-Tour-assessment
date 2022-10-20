@@ -6,12 +6,15 @@
             @click="$emit('bookmark', pic.image_id)"
         >
             <img :src="pic.url" :alt="pic.title" class="image">
-            <span 
-                class="image-title"
-                :class="{'image-title-saved': selectedImages.indexOf(pic.image_id) >= 0}"  
-            >
-                {{pic.title}}
-            </span>
+            <div class="image-title-display">
+                <span 
+                    class="image-title"
+                    :class="{'image-title-saved': selectedImages.indexOf(pic.image_id) >= 0}"  
+                >
+                    {{pic.title}}
+                </span>
+                <img src="../assets/arrow.png" class="arrow-right" alt="Arrow Right">
+            </div>
         </div>
     </div>
 </template>
@@ -23,6 +26,13 @@ export default {
     }
 }
 </script>
-<style lang="">
-    
+<style>
+    .image-title-display {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .arrow-right {
+        width: 25px;
+    }
 </style>
